@@ -173,7 +173,9 @@ void afterInterrupt() {
     // ここにパルス毎の処理
     // デバッグ用にカウントを表示
 
-    Serial.println("count is ... " + String(pulseCount));  
+    // Lazurite非互換
+    // Serial.println("count is ... " + String(pulseCount));  
+    Serial.println(pulseCount);
   }
 }
 
@@ -208,7 +210,8 @@ void throwData() {
 
   // 出力結果の数値に、0のパディングを入れたいのでsprintfで結果を整形
 
-  sprintf(strCount, "%05d", pulseCount); 
+  // ※ Lazurite非互換
+  // sprintf(strCount, "%05d", pulseCount); 
   
   //モジュールリセット開始
 
@@ -222,17 +225,20 @@ void throwData() {
   //モジュールリセット終了
 
   // サンプル出力1
-  // 文字列の連結は "+" を使うが、数値を扱う場合Stringクラスにしないといけないので下記のような書き方になる。  
+  // 文字列の連結は "+" を使うが、数値を扱う場合Stringクラスにしないといけないので下記のような書き方になる。
+  
   // Serial.println("COUNT IS " + String(strCount));
 
   // サンプル出力2
   // SKSENDTOを使ったサンプルの出力
 
-  Serial.println("SKSENDTO 1 FE80:0000:0000:0000:1034:5678:ABCD:EF01 0E1A 0 0005 " + String(strCount));  
+  // ※ Lazurite非互換
+  // Serial.println("SKSENDTO 1 FE80:0000:0000:0000:1034:5678:ABCD:EF01 0E1A 0 0005 " + String(strCount));  
+  Serial.print("SKSENDTO 1 FE80:0000:0000:0000:1034:5678:ABCD:EF01 0E1A 0 0005 ");
+  Serial.println(strCount);
     
   //カウント値を送信後sleepする
   
-  delay(1000);
   Serial.println("SKDSLEEP");  
   delay(1000);
 
