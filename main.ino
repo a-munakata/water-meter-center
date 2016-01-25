@@ -83,6 +83,10 @@ int inputPin   = 2;
 
 int outputPin  = 13;
 
+// 5ピンから出力　Wi-SUNモジュールをsleepから復帰させるのに、リセットする
+
+int restPin  = 5;
+
 // ※4: sleepの間隔(ms)
 // 1hは3600000msなので、1時間間隔を開ける場合は3600000を指定
 
@@ -124,6 +128,7 @@ void setup() {
   
   pinMode(inputPin,INPUT);
   pinMode(outputPin,OUTPUT);
+  pinMode(restPin, OUTPUT);
 
   // ※3: 割り込み時の処理を指定。
   // 第一引数を"0"と指定することで、ピン2を外部割り込みとして使用
@@ -204,6 +209,17 @@ void throwData() {
   // 出力結果の数値に、0のパディングを入れたいのでsprintfで結果を整形
 
   sprintf(strCount, "%05d", pulseCount); 
+  
+  //モジュールリセット開始
+
+  digitalWrite(restPin, HIGH);
+  delay(1000);
+  digitalWrite(restPin, LOW);
+  delay(1000);
+  digitalWrite(restPin, HIGH);
+  delay(1000);
+
+  //モジュールリセット終了
 
   // サンプル出力1
   // 文字列の連結は "+" を使うが、数値を扱う場合Stringクラスにしないといけないので下記のような書き方になる。  
@@ -213,4 +229,14 @@ void throwData() {
   // SKSENDTOを使ったサンプルの出力
 
   Serial.println("SKSENDTO 1 FE80:0000:0000:0000:1034:5678:ABCD:EF01 0E1A 0 0005 " + String(strCount));  
+  
+  
+  //カウント値を送信後sleepする
+  
+  delay(1000);
+
+  Serial.println("SKDSLEEP");
+  
+  sleep(1000);
+
 }
