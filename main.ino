@@ -67,36 +67,46 @@
  */
 
 // デバッグモード
+
 boolean debugMode = true;  
 
 // パルスのカウンタ
 // sleepTimeの間隔でカウンタが0にリセットされる
+
 int pulseCount = 0;              
 
 // 2ピンから入力
+
 int inputPin   = 2;
 
 // 13ピンに出力
+
 int outputPin  = 13;
 
 // ※4: sleepの間隔(ms)
 // 1hは3600000msなので、1時間間隔を開ける場合は3600000を指定
+
 int sleepInterval = 10000;
 
 // パルスの長さ（ms）
+
 int pulseInterval = 1000;
 
 // 最新の割り込みからの経過時間を保存するための変数
+
 unsigned long previousPulseTime = 0;
 
 // afterInterrupt()の関数が生成される前にsetup()内で使用しているため、
 // 事前に関数の宣言をしておく必要がある。
+
 void afterInterrupt(void);
 
 void setup() {
   
   if (debugMode) {    
+
     // デバッグ用で、シリアルモニタにprintlnする場合
+
     Serial.begin(9600); 
     
   } else {
@@ -111,6 +121,7 @@ void setup() {
   }
 
   // ピンモードの指定
+  
   pinMode(inputPin,INPUT);
   pinMode(outputPin,OUTPUT);
 
@@ -123,14 +134,17 @@ void setup() {
   //   RISING:  信号の立ち上がりエッジで割り込みが発生します。
   //   FALLING: 信号の立下りエッジで割込みが発生します。
   //   CHANGE: 信号が変化したときに割り込みが発生します。
+  
   attachInterrupt(0, afterInterrupt, RISING);
 }
 
 void loop() {
   // ※6: ここではdelayを使っているが、Lazuriteではsleepにする
+
   delay(sleepInterval);
   
   // sleepから抜けた時の処理
+
   afterAwake();
 }
 
@@ -141,16 +155,19 @@ void afterInterrupt() {
     // ※1: 一定時間内に割り込みが入った場合、その割り込みは無視される
     // ここに一定時間内に割り込みが入った場合の処理
     // デバッグ用に、一定時間内の割り込み時に文字列を出力    
+
     Serial.println("LESS THAN 1000ms!!!");
     
   } else {
     previousPulseTime = millis();    
 
     // ※2: カウンタをインクリメント
+
     countUp();
 
     // ここにパルス毎の処理
     // デバッグ用にカウントを表示
+
     Serial.println("count is ... " + String(pulseCount));  
   }
 }
@@ -161,9 +178,11 @@ void countUp() {
 
 void afterAwake() {
   // カウンタの値を送信する
+
   throwData();
 
   // カウンタをリセット
+
   resetCount();
 }
 
@@ -179,9 +198,11 @@ void throwData() {
   // ID2電子水道メータアダプターVer0.1.txtのサンプルのように下記の宣言をcountUp()の外で行うと、
   // カウンタをインクリメントしても出力がインクリメントされない。
   // そのためcountUp()内で下記を宣言すること。
+
   char strCount[5];
 
   // 出力結果の数値に、0のパディングを入れたいのでsprintfで結果を整形
+
   sprintf(strCount, "%05d", pulseCount); 
 
   // サンプル出力1
@@ -190,5 +211,6 @@ void throwData() {
 
   // サンプル出力2
   // SKSENDTOを使ったサンプルの出力
+
   Serial.println("SKSENDTO 1 FE80:0000:0000:0000:1034:5678:ABCD:EF01 0E1A 0 0005 " + String(strCount));  
 }
