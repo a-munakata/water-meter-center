@@ -185,7 +185,7 @@ void afterInterrupt() {
 
     // Lazurite非互換
     
-    Serial.println("count is ... " + pulseCount);
+    // Serial.println("count is ... " + pulseCount);
     
     // Serial.println(pulseCount);
   }
