@@ -237,6 +237,6 @@ void throwData() {
 
   Serial.println("SKDSLEEP");
   
-  sleep(1000);
+  delay(1000);
 
 }
