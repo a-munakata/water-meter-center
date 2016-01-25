@@ -1,3 +1,5 @@
+#include "stdio.h"
+
 /* 
  * 注意: コードを実行する前に、debugModeを確認してください。
  * 
