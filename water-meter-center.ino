@@ -229,14 +229,11 @@ void throwData() {
   // SKSENDTOを使ったサンプルの出力
 
   Serial.println("SKSENDTO 1 FE80:0000:0000:0000:1034:5678:ABCD:EF01 0E1A 0 0005 " + String(strCount));  
-  
-  
+    
   //カウント値を送信後sleepする
   
   delay(1000);
-
-  Serial.println("SKDSLEEP");
-  
+  Serial.println("SKDSLEEP");  
   delay(1000);
 
 }
