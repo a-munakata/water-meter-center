@@ -68,7 +68,7 @@
 
 // デバッグモード
 
-boolean debugMode = true;  
+boolean debugMode = false;  
 
 // パルスのカウンタ
 // sleepTimeの間隔でカウンタが0にリセットされる
@@ -103,7 +103,7 @@ unsigned long previousPulseTime = 0;
 // afterInterrupt()の関数が生成される前にsetup()内で使用しているため、
 // 事前に関数の宣言をしておく必要がある。
 
-void afterInterrupt(void);
+void afterInterrupt();
 
 void setup() {
   
@@ -182,9 +182,10 @@ void afterInterrupt() {
     // デバッグ用にカウントを表示
 
     // Lazurite非互換
-    // Serial.println("count is ... " + String(pulseCount));  
     
-    Serial.println(pulseCount);
+    Serial.println("count is ... " + pulseCount);
+    
+    // Serial.println(pulseCount);
   }
 }
 
@@ -253,3 +254,4 @@ void throwData() {
   delay(1000);
 
 }
+
