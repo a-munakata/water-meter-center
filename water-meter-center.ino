@@ -222,8 +222,7 @@ void throwData() {
 
   // 出力結果の数値に、0のパディングを入れたいのでsprintfで結果を整形
 
-  // ※ Lazurite非互換
-  // sprintf(strCount, "%05d", pulseCount); 
+  sprintf(strCount, "%05d", pulseCount); 
   
   //モジュールリセット開始
 
