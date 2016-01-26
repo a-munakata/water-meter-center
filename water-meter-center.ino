@@ -92,7 +92,7 @@ int restPin  = 6;
 // ※4: sleepの間隔(ms)
 // 1hは3600000msなので、1時間間隔を開ける場合は3600000を指定
 
-int sleepInterval = 300000;
+int sleepInterval = 10000;
 
 // パルスの長さ（ms）
 
@@ -143,7 +143,7 @@ void setup() {
 void loop() {
   // ※6: ここではdelayを使っているが、Lazuriteではsleepにする
 
-  delay(sleepInterval);
+  sleep(sleepInterval);
   
   // sleepから抜けた時の処理
 
