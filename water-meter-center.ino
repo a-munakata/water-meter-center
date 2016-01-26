@@ -87,12 +87,12 @@ int outputPin  = 13;
 
 // 5ピンから出力　Wi-SUNモジュールをsleepから復帰させるのに、リセットする
 
-int restPin  = 5;
+int restPin  = 6;
 
 // ※4: sleepの間隔(ms)
 // 1hは3600000msなので、1時間間隔を開ける場合は3600000を指定
 
-int sleepInterval = 10000;
+int sleepInterval = 300000;
 
 // パルスの長さ（ms）
 
@@ -118,7 +118,7 @@ void setup() {
   } else {
     Serial.begin(115200); 
 
-    //水道BOX毎にIDが異なる。10台分設定
+    //水道BOX毎にIDが異なる。10台分書き込み時に設定
     
     Serial.println("SKSREG S1 12345678abcdef08");
     delay(100);
@@ -246,13 +246,28 @@ void throwData() {
   // ※ Lazurite非互換
   // Serial.println("SKSENDTO 1 FE80:0000:0000:0000:1034:5678:ABCD:EF01 0E1A 0 0005 " + String(strCount));  
   
+  Serial.begin(115200); 
+
+    //水道BOX毎にIDが異なる。10台分設定
+    
+    Serial.println("SKSREG S1 12345678abcdef08");
+    delay(100);
+
+    //Ch33(922.5MHz)を選択　//Chは全ての台数を同じにする
+    
+    Serial.println("SKSREG S2 21");
+    delay(100);
+    
+    //PAN ID 0x8888を選択//PANは全ての台数を同じにする
+    
+    Serial.println("SKSREG S3 8888");
+    delay(100);
+  
   Serial.print("SKSENDTO 1 FE80:0000:0000:0000:1034:5678:ABCD:EF01 0E1A 0 0005 ");
   Serial.println(strCount);
     
   //カウント値を送信後sleepする
   
   Serial.println("SKDSLEEP");  
-  delay(1000);
 
 }
-
