@@ -85,7 +85,7 @@ int inputPin   = 2;
 
 int outputPin  = 13;
 
-// 5ピンから出力　Wi-SUNモジュールをsleepから復帰させるのに、リセットする
+// 6ピンから出力　Wi-SUNモジュールをsleepから復帰させるのに、WakeUpする
 
 int restPin  = 6;
 
