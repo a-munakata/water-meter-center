@@ -116,22 +116,9 @@ void setup() {
     Serial.begin(9600); 
     
   } else {
-    Serial.begin(115200); 
-
-    //水道BOX毎にIDが異なる。10台分書き込み時に設定
     
-    Serial.println("SKSREG S1 12345678abcdef08");
-    delay(100);
-
-    //Ch33(922.5MHz)を選択　//Chは全ての台数を同じにする
+    sendSkCommands();
     
-    Serial.println("SKSREG S2 21");
-    delay(100);
-    
-    //PAN ID 0x8888を選択//PANは全ての台数を同じにする
-    
-    Serial.println("SKSREG S3 8888");
-    delay(100);
   }
 
   // ピンモードの指定
@@ -161,6 +148,25 @@ void loop() {
   // sleepから抜けた時の処理
 
   afterAwake();
+}
+
+void sendSkCommands() {
+  Serial.begin(115200); 
+
+  //水道BOX毎にIDが異なる。10台分書き込み時に設定
+    
+  Serial.println("SKSREG S1 12345678abcdef08");
+  delay(100);
+
+  //Ch33(922.5MHz)を選択　//Chは全ての台数を同じにする
+    
+  Serial.println("SKSREG S2 21");
+  delay(100);
+    
+  //PAN ID 0x8888を選択//PANは全ての台数を同じにする
+    
+  Serial.println("SKSREG S3 8888");
+  delay(100);
 }
 
 void afterInterrupt() {    
@@ -246,22 +252,7 @@ void throwData() {
   // ※ Lazurite非互換
   // Serial.println("SKSENDTO 1 FE80:0000:0000:0000:1034:5678:ABCD:EF01 0E1A 0 0005 " + String(strCount));  
   
-  Serial.begin(115200); 
-
-    //水道BOX毎にIDが異なる。10台分設定
-    
-    Serial.println("SKSREG S1 12345678abcdef08");
-    delay(100);
-
-    //Ch33(922.5MHz)を選択　//Chは全ての台数を同じにする
-    
-    Serial.println("SKSREG S2 21");
-    delay(100);
-    
-    //PAN ID 0x8888を選択//PANは全ての台数を同じにする
-    
-    Serial.println("SKSREG S3 8888");
-    delay(100);
+  sendSkCommands();
   
   Serial.print("SKSENDTO 1 FE80:0000:0000:0000:1034:5678:ABCD:EF01 0E1A 0 0005 ");
   Serial.println(strCount);
