@@ -79,15 +79,15 @@ int pulseCount = 0;
 
 // 2ピンから入力
 
-int inputPin   = 2;
+int inputPin = 2;
 
 // 13ピンに出力
 
-int outputPin  = 13;
+int outputPin = 13;
 
 // 6ピンから出力　Wi-SUNモジュールをsleepから復帰させるのに、WakeUpする
 
-int restPin  = 6;
+int restPin = 6;
 
 // ※4: sleepの間隔(ms)
 // 1hは3600000msなので、1時間間隔を開ける場合は3600000を指定
@@ -123,8 +123,8 @@ void setup() {
 
   // ピンモードの指定
   
-  pinMode(inputPin,INPUT);
-  pinMode(outputPin,OUTPUT);
+  pinMode(inputPin, INPUT);
+  pinMode(outputPin, OUTPUT);
   pinMode(restPin, OUTPUT);
 
   // ※3: 割り込み時の処理を指定。
@@ -177,7 +177,7 @@ void afterInterrupt() {
     // ここに一定時間内に割り込みが入った場合の処理
     // デバッグ用に、一定時間内の割り込み時に文字列を出力    
 
-    Serial.println("LESS THAN 1000ms!!!");
+    // Serial.println("LESS THAN 1000ms!!!");
     
   } else {
     previousPulseTime = millis();    
@@ -241,18 +241,11 @@ void throwData() {
 
   //モジュールリセット終了
 
-  // サンプル出力1
-  // 文字列の連結は "+" を使うが、数値を扱う場合Stringクラスにしないといけないので下記のような書き方になる。
-  
-  // Serial.println("COUNT IS " + String(strCount));
-
-  // サンプル出力2
-  // SKSENDTOを使ったサンプルの出力
-
-  // ※ Lazurite非互換
-  // Serial.println("SKSENDTO 1 FE80:0000:0000:0000:1034:5678:ABCD:EF01 0E1A 0 0005 " + String(strCount));  
+  // リセット後、設定がクリアになるので再度SKコマンドを送信しsetup
   
   sendSkCommands();
+
+  // カウント値を送信
   
   Serial.print("SKSENDTO 1 FE80:0000:0000:0000:1034:5678:ABCD:EF01 0E1A 0 0005 ");
   Serial.println(strCount);
