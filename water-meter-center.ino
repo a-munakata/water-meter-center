@@ -22,7 +22,10 @@
  *   コードの※3を参照
  *   
  * - sleepの間隔  
- *   カウンタの値を外部に送信してから、次に送信するまでの時間（sleepInterval）をmsで指定します。
+ *   sleepの間隔をsleepIntervalで指定します(ms)
+ * 
+ * - カウンタを送信する間隔
+ *   カウンタの値を外部に送信してから、次に送信するまでの時間（sendInterval）をmsで指定します。
  *   1hは3600000msなので、1時間間隔を開ける場合は3600000を指定
  *   コードの※4を参照
  *   
@@ -53,6 +56,10 @@
  *   arduinoではsleep関数がないので、delayを使用しています。
  *   Lazuriteのsleepを使う場合は、delayをsleepに書き換えてください。
  *   コードの※6を参照
+ *   
+ *   なお、sleepの間隔は60分にしたいが、sleep(3600000)とするとハードの問題でうまく動かない。
+ *   このため、sleepの間隔は短めにして（3分）
+ *   sleepが20回目の時に（1時間経った時）カウントを送信するというやり方に変更しています。
  *   
  * - 出力データのカウント値の桁数について  
  *   出力時に、00001のように0で桁数を揃えたい場合、
@@ -90,13 +97,20 @@ int outputPin = 13;
 int restPin = 6;
 
 // ※4: sleepの間隔(ms)
+
+int sleepInterval = 180000;
+
+// カウントを送信する間隔
 // 1hは3600000msなので、1時間間隔を開ける場合は3600000を指定
 
-int sleepInterval = 10000;
+int sendInterval = 360000;
 
 // パルスの長さ（ms）
 
 int pulseInterval = 1000;
+
+// sleepした回数
+int sleepCount = 0;
 
 // 最新の割り込みからの経過時間を保存するための変数
 
@@ -202,13 +216,23 @@ void countUp() {
 }
 
 void afterAwake() {
-  // カウンタの値を送信する
+  sleepCount++;
+  
+  if (sleepCount < ( sendInterval / sleepInterval )) {     
 
-  throwData();
+    // デバッグ用
+    Serial.print("sleepCount is... ");
+    Serial.println(sleepCount);
+    
+  } else {
+    // カウンタの値を送信する
+  
+    throwData();    
 
-  // カウンタをリセット
+    // カウンタをリセット
 
-  resetCount();
+    resetCount();    
+  }
 }
 
 void resetCount() {
