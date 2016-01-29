@@ -98,12 +98,13 @@ int restPin = 6;
 
 // ※4: sleepの間隔(ms)
 
-int sleepInterval = 180000;
+int sleepInterval = 30000;
 
-// カウントを送信する間隔
-// 1hは3600000msなので、1時間間隔を開ける場合は3600000を指定
+// sleepを繰り返す回数
+// 1時間毎に値を送信したい場合、1h / sleepInterval = 3600s / 30s = 120
+// となるので、120と入力する。
 
-int sendInterval = 360000;
+int sleepRepeatTime = 120;
 
 // パルスの長さ（ms）
 
@@ -122,6 +123,11 @@ unsigned long previousPulseTime = 0;
 void afterInterrupt();
 
 void setup() {
+  // ピンモードの指定
+  
+  pinMode(inputPin, INPUT);
+  pinMode(outputPin, OUTPUT);
+  pinMode(restPin, OUTPUT);
   
   if (debugMode) {    
 
@@ -130,16 +136,12 @@ void setup() {
     Serial.begin(9600); 
     
   } else {
-    
+  
+    digitalWrite(restPin, HIGH);
+    delay(1000);
     sendSkCommands();
     
   }
-
-  // ピンモードの指定
-  
-  pinMode(inputPin, INPUT);
-  pinMode(outputPin, OUTPUT);
-  pinMode(restPin, OUTPUT);
 
   // ※3: 割り込み時の処理を指定。
   // 第一引数を"0"と指定することで、ピン2を外部割り込みとして使用
@@ -199,15 +201,6 @@ void afterInterrupt() {
     // ※2: カウンタをインクリメント
 
     countUp();
-
-    // ここにパルス毎の処理
-    // デバッグ用にカウントを表示
-
-    // Lazurite非互換
-    
-    // Serial.println("count is ... " + pulseCount);
-    
-    // Serial.println(pulseCount);
   }
 }
 
@@ -216,30 +209,33 @@ void countUp() {
 }
 
 void afterAwake() {
+
+  char pulseDebug[5];
   sleepCount++;
   
-  if (sleepCount < ( sendInterval / sleepInterval )) {     
-
-    // デバッグ用
-    Serial.print("sleepCount is... ");
-    Serial.println(sleepCount);
+  // デバッグ用
+  sprintf(pulseDebug, "%d", pulseCount);
+  Serial.print("pulseCount is... ");
+  Serial.println(pulseDebug);
     
-  } else {
+  if (sleepCount >= sleepRepeatTime) {     
     // カウンタの値を送信する
   
     throwData();    
 
     // カウンタをリセット
 
-    resetCount();    
+    resetCount();
   }
 }
 
 void resetCount() {
   pulseCount = 0;
+  sleepCount = 0;
 }
 
 void throwData() {
+
   // ※5: 本来であれば、ここで外部に結果を送信するが
   // ここではデバック用にシリアルモニタに出力させるようになっている。
   
@@ -247,35 +243,28 @@ void throwData() {
   // ID2電子水道メータアダプターVer0.1.txtのサンプルのように下記の宣言をcountUp()の外で行うと、
   // カウンタをインクリメントしても出力がインクリメントされない。
   // そのためcountUp()内で下記を宣言すること。
-
+  
   char strCount[5];
 
   // 出力結果の数値に、0のパディングを入れたいのでsprintfで結果を整形
 
   sprintf(strCount, "%05d", pulseCount); 
   
-  //モジュールリセット開始
-
   digitalWrite(restPin, HIGH);
   delay(1000);
+    
   digitalWrite(restPin, LOW);
   delay(1000);
-  digitalWrite(restPin, HIGH);
-  delay(1000);
-
-  //モジュールリセット終了
-
-  // リセット後、設定がクリアになるので再度SKコマンドを送信しsetup
   
-  sendSkCommands();
-
   // カウント値を送信
   
   Serial.print("SKSENDTO 1 FE80:0000:0000:0000:1034:5678:ABCD:EF01 0E1A 0 0005 ");
   Serial.println(strCount);
     
+  digitalWrite(restPin, HIGH);
+  delay(1000);
+  
   //カウント値を送信後sleepする
   
-  Serial.println("SKDSLEEP");  
-
+  Serial.println("SKDSLEEP");
 }
