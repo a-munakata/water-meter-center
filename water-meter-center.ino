@@ -106,10 +106,6 @@ int sleepInterval = 30000;
 
 int sleepRepeatTime = 120;
 
-// 電源を入れたあと、確認をするために30秒に1回、カウントを送信する。
-// その確認用の時間（ms）
-int confirmatoinTime = 600000; 
-
 // パルスの長さ（ms）
 
 int pulseInterval = 1000;
@@ -225,20 +221,11 @@ void afterAwake() {
   if (sleepCount >= sleepRepeatTime) {     
     // カウンタの値を送信する
   
-    throwData();
+    throwData();    
 
     // カウンタをリセット
 
     resetCount();
-    
-  } else if (millis() < confirmatoinTime) {  
-    // 確認用に、電源を入れてから10分の間は、30秒に1度値を送信する
-    
-    throwData();
-
-    // カウンタをリセット
-
-    resetCount();     
   }
 }
 
