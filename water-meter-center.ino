@@ -111,11 +111,16 @@ int sleepRepeatTime = 120;
 int pulseInterval = 1000;
 
 // sleepした回数
+
 int sleepCount = 0;
 
 // 最新の割り込みからの経過時間を保存するための変数
 
 unsigned long previousPulseTime = 0;
+
+// 起動ルーチンの追加：2016/02/03 Hisaki Shimodousono
+
+int Start_Up_Count = 0;
 
 // afterInterrupt()の関数が生成される前にsetup()内で使用しているため、
 // 事前に関数の宣言をしておく必要がある。
@@ -154,6 +159,10 @@ void setup() {
   //   CHANGE: 信号が変化したときに割り込みが発生します。
   
   attachInterrupt(0, afterInterrupt, RISING);
+  
+  // 起動ルーチンの追加：2016/02/03 Hisaki Shimodousono
+
+  Start_Up_Count = 0;
 }
 
 void loop() {
@@ -187,7 +196,22 @@ void sendSkCommands() {
 
 void afterInterrupt() {    
     
-  if ((millis() - previousPulseTime) < pulseInterval) {   
+  // オーバーフロー対策の追加：2016/02/03 Hisaki Shimodousono
+  // millis()はunsigned long型のため、4,294,967,295ミリ秒(約49日)でオーバーフローするため、0に戻ります。
+  // ((millis() - previousPulseTime) < pulseInterval) この条件では1000ms経過した時に割り込んで来ても、カウントを無視する可能性が有ります。
+  // オーバーフローで0に戻っても正常に経過時間を見るために改造
+  
+  unsigned long nowTime = millis();
+  unsigned long elapsed_time = 0;
+    
+  if (nowTime >= previousPulseTime) {
+    elapsed_time = nowTime - previousPulseTime;
+  } else {
+    // オーバーフロー対策
+    elapsed_time = 0xffffffff + nowTime - previousPulseTime + 1;
+  }
+    
+  if (elapsed_time < pulseInterval) {   // 1000ms経過した？
 
     // ※1: 一定時間内に割り込みが入った場合、その割り込みは無視される
     // ここに一定時間内に割り込みが入った場合の処理
@@ -196,7 +220,7 @@ void afterInterrupt() {
     // Serial.println("LESS THAN 1000ms!!!");
     
   } else {
-    previousPulseTime = millis();    
+    previousPulseTime = millis();           // 現在の経過時間
 
     // ※2: カウンタをインクリメント
 
@@ -217,7 +241,22 @@ void afterAwake() {
   sprintf(pulseDebug, "%d", pulseCount);
   Serial.print("pulseCount is... ");
   Serial.println(pulseDebug);
-    
+  
+  // 起動ルーチンの追加：2016/02/03 Hisaki Shimodousono
+  // 起動直後、30sごとにカウンタの値を送信する
+  // 計6回(3分間)
+  if(Start_Up_Count < 6) {
+    Start_Up_Count ++;    // カウントUp
+  
+    // カウンタの値を送信する
+    throwData();    
+
+    // カウンタをリセット
+    resetCount();
+  }
+ 
+  // 起動ルーチンの追加：2016/02/03 Hisaki Shimodousono
+  
   if (sleepCount >= sleepRepeatTime) {     
     // カウンタの値を送信する
   
