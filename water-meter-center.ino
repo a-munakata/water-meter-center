@@ -94,7 +94,7 @@ int outputPin = 13;
 
 // 6ピンから出力　Wi-SUNモジュールをsleepから復帰させるのに、WakeUpする
 
-int restPin = 6;
+int wakeupPin = 6;
 
 // ※4: sleepの間隔(ms)
 
@@ -132,7 +132,7 @@ void setup() {
   
   pinMode(inputPin, INPUT);
   pinMode(outputPin, OUTPUT);
-  pinMode(restPin, OUTPUT);
+  pinMode(wakeupPin, OUTPUT);
   
   if (debugMode) {    
 
@@ -142,7 +142,7 @@ void setup() {
     
   } else {
   
-    digitalWrite(restPin, HIGH);
+    digitalWrite(wakeupPin, HIGH);
     delay(1000);
     sendSkCommands();
     
@@ -289,10 +289,10 @@ void throwData() {
 
   sprintf(strCount, "%05d", pulseCount); 
   
-  digitalWrite(restPin, HIGH);
+  digitalWrite(wakeupPin, HIGH);
   delay(1000);
     
-  digitalWrite(restPin, LOW);
+  digitalWrite(wakeupPin, LOW);
   delay(1000);
   
   // カウント値を送信
@@ -300,7 +300,7 @@ void throwData() {
   Serial.print("SKSENDTO 1 FE80:0000:0000:0000:1034:5678:ABCD:EF01 0E1A 0 0005 ");
   Serial.println(strCount);
     
-  digitalWrite(restPin, HIGH);
+  digitalWrite(wakeupPin, HIGH);
   delay(1000);
   
   //カウント値を送信後sleepする
