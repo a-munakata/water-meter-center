@@ -92,6 +92,10 @@ int inputPin = 2;
 
 int outputPin = 13;
 
+// 5番ピンから出力
+
+int resetPin = 5;
+
 // 6ピンから出力　Wi-SUNモジュールをsleepから復帰させるのに、WakeUpする
 
 int wakeupPin = 6;
@@ -133,6 +137,7 @@ void setup() {
   pinMode(inputPin, INPUT);
   pinMode(outputPin, OUTPUT);
   pinMode(wakeupPin, OUTPUT);
+  pinMode(resetPin, OUTPUT);
   
   if (debugMode) {    
 
@@ -141,7 +146,17 @@ void setup() {
     Serial.begin(9600); 
     
   } else {
-  
+    // resetPinでWi-SUNモジュールのリセット
+    digitalWrite(resetPin, HIGH);
+    delay(500);
+      
+    digitalWrite(resetPin, LOW);
+    delay(500);
+      
+    digitalWrite(resetPin, HIGH);
+    delay(500);
+
+    // wakeupPinでスリープからの解除
     digitalWrite(wakeupPin, HIGH);
     delay(1000);
     sendSkCommands();
