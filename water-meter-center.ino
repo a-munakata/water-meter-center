@@ -134,8 +134,8 @@ void setup() {
   pinMode(inputPin,  INPUT);  // 2番ピン  
   setPullUpPin(3);
   setPullUpPin(4);
-  pinMode(wakeupPin, OUTPUT); // 5番ピン
-  pinMode(resetPin,  OUTPUT); // 6番ピン
+  pinMode(resetPin,  OUTPUT); // 5番ピン
+  pinMode(wakeupPin, OUTPUT); // 6番ピン  
   setPullUpPin(7);
   setPullUpPin(8);
   setPullUpPin(9);
