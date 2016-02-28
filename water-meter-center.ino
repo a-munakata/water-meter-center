@@ -88,10 +88,6 @@ int pulseCount = 0;
 
 int inputPin = 2;
 
-// 13ピンに出力
-
-int outputPin = 13;
-
 // 5番ピンから出力
 
 int resetPin = 5;
@@ -132,12 +128,21 @@ int Start_Up_Count = 0;
 void afterInterrupt();
 
 void setup() {
+
   // ピンモードの指定
   
-  pinMode(inputPin, INPUT);
-  pinMode(outputPin, OUTPUT);
-  pinMode(wakeupPin, OUTPUT);
-  pinMode(resetPin, OUTPUT);
+  pinMode(inputPin,  INPUT);  // 2番ピン  
+  setPullUpPin(3);
+  setPullUpPin(4);
+  pinMode(wakeupPin, OUTPUT); // 5番ピン
+  pinMode(resetPin,  OUTPUT); // 6番ピン
+  setPullUpPin(7);
+  setPullUpPin(8);
+  setPullUpPin(9);
+  setPullUpPin(10);
+  setPullUpPin(11);
+  setPullUpPin(12);
+  setPullUpPin(13);
   
   if (debugMode) {    
 
@@ -188,6 +193,16 @@ void loop() {
   // sleepから抜けた時の処理
 
   afterAwake();
+}
+
+void setPullUpPin(int pin) {
+  // ピンを入力に設定
+  
+  pinMode(pin, INPUT); 
+
+  // プルアップ抵抗を有効に
+  
+  digitalWrite(pin, HIGH);
 }
 
 void sendSkCommands() {
