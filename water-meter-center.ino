@@ -186,13 +186,14 @@ void setup() {
 }
 
 void loop() {
-  // ※6: ここではdelayを使っているが、Lazuriteではsleepにする
-
-  sleep(sleepInterval);
   
   // sleepから抜けた時の処理
 
   afterAwake();
+
+  // ※6: Lazuriteではsleepにする。Arduinoではdelay関数を利用する。
+
+  sleep(sleepInterval);
 }
 
 void setPullUpPin(int pin) {
