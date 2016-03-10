@@ -329,7 +329,8 @@ void throwData() {
   // カウント値を送信
   
   Serial.print("SKSENDTO 1 FE80:0000:0000:0000:1034:5678:ABCD:EF01 0E1A 0 0005 ");
-  Serial.println(strCount);
+  Serial.print(strCount);
+  Serial.println(" ");
     
   digitalWrite(wakeupPin, HIGH);
   delay(1000);
